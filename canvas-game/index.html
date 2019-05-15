@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <title>Mazebot</title>
+
+    <!-- utilities in js/utils-->
+    <script type="text/javascript" src="js/utils/polyfills.js"></script>
+    <script type="text/javascript" src="js/utils/pathfinder.js"></script>
+    <script type="text/javascript" src="js/utils/api-client.js"></script>
+    <script type="text/javascript" src="js/utils/coordinates.js"></script>
+
+    <!-- rendering the game happens in js/display -->
+    <script type="text/javascript" src="js/display/styles.js"></script>
+    <script type="text/javascript" src="js/display/game-renderer.js"></script>
+    <script type="text/javascript" src="js/display/overlay-renderer.js"></script>
+    <script type="text/javascript" src="js/display/avatar-path-renderer.js"></script>
+    <script type="text/javascript" src="js/display/map-renderer.js"></script>
+    <script type="text/javascript" src="js/display/canvas-utils.js"></script>
+    <script type="text/javascript" src="js/display/status-bar.js"></script>
+
+    <!-- input handling and game logic is in js/game/ -->
+    <script type="text/javascript" src="js/game/maze-input.js"></script>
+    <script type="text/javascript" src="js/game/maze-game.js"></script>
+
+    <!-- The top-level script -->
+    <script type="text/javascript" src="js/index.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id='maze-browser' class='phase-starting'>
+
+      <div id='get-started'>
+        <h1>Welcome to Mazebot</h1>
+        <img src='mazebot.png' class='mazebot-image'/>
+        <p>Use your arrow keys, mouse, or touch to navigate the maze</p>
+        <p>Press + or double click to zoom in or out</p>
+        <div>
+          <button id='start'>Maze Me!</button>
+        </div>
+      </div>
+
+      <div id='results'>
+        <h1>RESULTS</h1>
+        <img src='mazebot.png' class='mazebot-image'/>
+        <p id="results-message"></p>
+        <div>
+          <button id='next-maze'>Maze Me Again!</button>
+        </div>
+      </div>
+
+      <div id='error'>
+        <h1>OOPS!</h1>
+        <img src='mazebot.png' class='mazebot-image'/>
+        <p>Something went wrong there.</p>
+        <p id="error-message"></p>
+        <p>Please refresh the page.</p>
+      </div>
+
+      <div id='game'>
+        <canvas id='map'></canvas>
+        <canvas id='avatar-path'></canvas>
+        <canvas id='overlay'></canvas>
+        <div id='status-bar'>
+          <div>
+            <div class='status-label'>Maze</div>
+            <div id='current-maze' class='status-value'></div>
+          </div>
+          <div>
+            <div class='status-label'>Moves</div>
+            <div id='move-count' class='status-value'></div>
+          </div>
+          <div>
+            <div class='status-label'>Position</div>
+            <div id='current-position' class='status-value'></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </body>
+</html>

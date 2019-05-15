@@ -1,0 +1,105 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Roboto Medium', sans-serif;
+}
+
+p {
+  margin: 20px auto;
+  max-width: 700px;
+}
+
+.mazebot-image {
+  max-width: 40vw;
+  max-height: 40vh;
+  margin: 20px;
+}
+
+button#start, button#next-maze {
+  font-family: 'Roboto', sans-serif;
+  font-size: 30px;
+  border-radius: 7px;
+  margin-top: 20px;
+  padding: 10px 20px;
+}
+
+#game {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: none;
+}
+
+#get-started, #results, #error {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  text-align: center;
+}
+
+.phase-starting #get-started{
+  display: block;
+}
+
+.phase-results #results {
+  display: block;
+}
+
+.phase-playing #game {
+  display: block;
+}
+
+.phase-error #error {
+  display: block;
+}
+#board, #overlay, #avatar-path {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#board {
+  z-index: 1;
+}
+#avatar-path {
+  z-index: 1;
+}
+#overlay {
+  z-index: 3;
+  cursor: crosshair;
+}
+
+#status-bar {
+  padding: 5px 10px 10px;
+  z-index: 4;
+  display: fixed;
+  height: 30px;
+  bottom: 0;
+  width: 100%;
+
+  background:white;
+  display: flex;
+  border-top: 2px solid #222222;
+}
+
+#status-bar div {
+  flex: 1 1 33%;
+}
+
+.status-label {
+  text-align: center;
+  font-size: 8px;
+  color: #666666;
+}
+
+.status-value {
+  text-align: center;
+}
