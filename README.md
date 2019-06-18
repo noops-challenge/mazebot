@@ -9,12 +9,14 @@ These days, Mazebot is excited about only one thing: Challenging you to solve ma
 
 Are you ready to solve them?
 
-Get started with some smaller mazes. Once you get the basics down, enter the Mazebot 500, a race to solve a series of mazes in a row.
-If you can complete them all, you will get a certificate of your achievement.
+Start with the smaller mazes. Once you get the basics down, enter the Mazebot 500, a race to solve a series of mazes in a row.
+
+IF you can complete them all, you will get a certificate of your achievement.
 
 # 🤖 API
 
 Each maze in Mazebot's collection has a map that is a an array of rows.
+
 Each row is an array of single-length strings representing the contents of each location in the maze.
 
 The possible values are:
@@ -84,7 +86,7 @@ Check out the [source code](./canvas-game) and show us your forks.
 
 ![Screenshot](canvas-game/mazebot-screenshot.png?raw=true "Mazebot screenshot")
 
-Look at (the README)(./canvas-game/README.md) for more information and ideas for extending the game.
+Look at [the README](./canvas-game/README.md) for more information and ideas for extending the game.
 
 # ✨ A few ideas
 
