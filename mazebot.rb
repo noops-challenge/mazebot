@@ -7,13 +7,13 @@ require "net/http"
 require "json"
 
 def main
-  # get started -- replace with your login
+  # get started — replace with your login
   start = post_json('/mazebot/race/start', { :login => 'mazebot' })
 
   maze_path = start['nextMaze']
   # get the first maze
   next_maze = get_json(maze_path)
-  # Answer each question, as log as we are correct
+  # Answer each question, as long as we are correct
   loop do
 
     # print out the map
