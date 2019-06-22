@@ -5,7 +5,7 @@ Here's an example HTML game that uses the Mazebot API. that renders a random maz
 
 Check out the [live demo](https://noops-challenge.github.io/mazebot/canvas-game) or clone this repository to your computer and open `index.html` in your browser to play locally.
 
-This game is written without libraries and no build tools -- just JavaScript, HTML, and CSS. If you want to change it, just edit the files and refresh your borwser.
+This game is written without libraries and no build tools -- just JavaScript, HTML, and CSS. If you want to change it, just edit the files and refresh your browser.
 
 It uses the [HTML canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) to render the game.
 
