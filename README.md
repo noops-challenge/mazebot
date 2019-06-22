@@ -52,7 +52,7 @@ You can optionally limit the sizes of maze you would like with the `minSize` and
 
 ### Get a maze that is between 30 and 60 squares wide.
 
-`GET /mazebot/random?minSize=30&mazSize=60`
+`GET /mazebot/random?minSize=30&maxSize=60`
 
 ## 🏎️ Race mode
 
