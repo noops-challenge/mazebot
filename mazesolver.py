@@ -15,17 +15,30 @@ class Maze:
         self.dimensions = dimensions
         self.checkpoints = [start]
         self.path = []
+        self.win = False
         self.display_maze()
         self.check_possible_movements()
 
-    def move_player(self, direction):
+    def move_player(self, movement):
         """
         Moves the player in the desired direction
-        :param direction:
+        :param movement: list: [direction, coordinates, distance from exit]
         :return:
         """
-        print(f'moving player {direction}')
+        direction = movement[0]
+        x = movement[1].x
+        y = movement[1].y
+
+        print(f'Moving player {direction}')
+        if self.layout[y][x] == 'B':
+            self.win = True
+
+        self.layout[y][x] = 'P'
         self.path.append(direction)
+        self.display_maze()
+
+        if not self.win:
+            self.check_possible_movements()
         return
 
     def check_possible_movements(self):
@@ -60,29 +73,29 @@ class Maze:
 
         print(possible_movements)
         if possible_movements:
-            self.determine_optimal_movement(possible_movements=possible_movements)
+            self.determine_optimal_movement(possible_directions=possible_movements)
         else:
             self.revert_to_checkpoint()
 
     # TODO: Possibly optimize this
-    def determine_optimal_movement(self, possible_movements):
+    def determine_optimal_movement(self, possible_directions):
         """
         Determines what move will put the player closest to the end point (greedy algorithm)
-        :param possible_movements: list - all open movements
+        :param possible_directions: list - all open directions (N, E, S, W)
         :return:
         """
-        if len(possible_movements) == 1:
-            self.move_player(direction=possible_movements[0])
-        else:
-            # TODO: Create orderedict of chekpoints to hold additional possible movements
-            self.checkpoints.append(Position(x=self.player.x, y=self.playery))
-            # Chooses space that will get player closest to the end
-            point_distances = {self.distance_formula(point): point for point in possible_movements}
-            min_distance = (min(point_distances.keys()))
-            optimal_movement = point_distances[min_distance]
+        possible_spaces = []
 
-            self.move_player(direction=optimal_movement)
+        # Creates list of possible movements that includes: direction, the point on the board, distance from exit,
+        for direction in possible_directions:
+            space = self.calculate_point(direction=direction)
+            distance_from_exit = self.distance_formula(point=space)
+            possible_space = [direction, space, distance_from_exit]
+            possible_spaces.append(possible_space)
 
+        possible_spaces.sort(key=lambda x: x[0])
+        optimal_movement = possible_spaces[0]
+        self.move_player(optimal_movement)
         return
 
     def revert_to_checkpoint(self):
@@ -93,16 +106,19 @@ class Maze:
         return
 
     def display_maze(self):
+        """
+        Displays maze
+        :return:
+        """
         for row in self.layout:
             print(row)
 
-    def distance_formula(self, direction):
+    def distance_formula(self, point):
         """
         Calculates distance between a point and the end
-        :param direction: String - direction in which is being checked
+        :param point: Position - x, y coordinates of space in maze
         :return: float - distance from the point to the end
         """
-        point = self.calculate_point(direction)
         distance = (((point.x - self.end.x)**2) + (point.y - self.end.y)**2)**.5
         return distance
 
@@ -123,6 +139,9 @@ class Maze:
 
         return point
 
+    def get_path(self):
+        return self.path
+
 
 def main():
     data = requests.get(url='https://api.noopschallenge.com/mazebot/random?maxSize=10').json()
@@ -137,6 +156,9 @@ def main():
     end = Position(x=end[0], y=end[1])
 
     maze = Maze(layout=layout, start=start, end=end, dimensions=dimensions)
+
+    path = maze.get_path()
+    print(path)
 
 
 if __name__ == '__main__':
