@@ -102,7 +102,7 @@ class Maze:
 
         self.move_player(optimal_movement)
         return
-
+    # TODO: Fix path (has to remove more than one letter sometimes)
     def revert_to_checkpoint(self):
         """
         Reverts the player back to where they had a decision on which way to go
