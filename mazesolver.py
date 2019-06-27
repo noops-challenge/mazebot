@@ -17,6 +17,7 @@ class Maze:
         self.checkpoints = [start]
         self.path = []
         self.win = False
+        self.moves_since_checkpoint = 0
         self.display_maze()
         self.check_possible_movements()
 
@@ -31,6 +32,7 @@ class Maze:
         y = movement[1].y
 
         print(f'Moving player {direction}')
+        print('path:', self.path)
         self.layout[self.playery][self.playerx] = "V"
         self.playerx = x
         self.playery = y
@@ -73,6 +75,7 @@ class Maze:
         if possible_movements:
             self.determine_optimal_movement(possible_directions=possible_movements)
         else:
+            self.moves_since_checkpoint += 1
             print('reverting to checkpoint: ', self.checkpoints[-1])
             self.revert_to_checkpoint()
 
@@ -98,10 +101,13 @@ class Maze:
 
         # If the player has a choice to make, set the current point as a checkpoint
         if len(possible_spaces) > 1:
+            self.moves_since_checkpoint = 0
             self.checkpoints.append((self.playerx, self.playery))
-
+        else:
+            self.moves_since_checkpoint += 1
         self.move_player(optimal_movement)
         return
+
     # TODO: Fix path (has to remove more than one letter sometimes)
     def revert_to_checkpoint(self):
         """
@@ -119,7 +125,8 @@ class Maze:
         self.playerx = last_checkpoint[0]
         self.playery = last_checkpoint[1]
         self.layout[self.playery][self.playerx] = "P"
-        self.path.pop()
+        for x in range(self.moves_since_checkpoint):
+            self.path.pop()
         self.display_maze()
         self.check_possible_movements()
         return
