@@ -10,16 +10,13 @@ class Maze:
     def __init__(self, layout, start, end, dimensions):
         self.layout = layout
         self.start = start
-        self.playerx = start.x
-        self.playery = start.y
+        self.player_position = start
         self.end = end
         self.dimensions = dimensions
         self.checkpoints = [start]
         self.path = []
-        self.win = False
-        self.moves_since_checkpoint = 0
-        self.display_maze()
-        self.check_possible_movements()
+        self.checkpoint_paths = {self.start: self.path}
+        #self.moves_since_checkpoint = 0
 
     def move_player(self, movement):
         """
@@ -32,51 +29,51 @@ class Maze:
         y = movement[1].y
 
         print(f'Moving player {direction}')
-        print('path:', self.path)
-        self.layout[self.playery][self.playerx] = "V"
-        self.playerx = x
-        self.playery = y
-        if self.layout[y][x] == 'B':
-            self.win = True
+        self.layout[self.player_position.y][self.player_position.x] = "V"
+
+        self.player_position = Position(x=x, y=y)
 
         self.layout[y][x] = 'P'
         self.path.append(direction)
-        self.display_maze()
-
-        if not self.win:
-            self.check_possible_movements()
         return
 
     def check_possible_movements(self):
         """
-        Checks to see what ways the player can maneuver
+        Checks to see what ways the player can move
         :return:
         """
+        print()
+        self.display_maze()
+        print(f'Current Path: {self.get_path()}')
+        print(f'Current Checkpoints: {self.checkpoints}')
+        print(f'Path index: {len(self.path) - 1}')
+
         possible_movements = []
-        restricted_spaces = ['X', 'V']
+        restricted_spaces = ['X', 'V']  # X = Wall, V = Visited
+
         # Look North
-        if (self.playery - 1) >= 0:
-            if self.layout[self.playery - 1][self.playerx] not in restricted_spaces:
+        if (self.player_position.y - 1) >= 0:
+            if self.layout[self.player_position.y - 1][self.player_position.x] not in restricted_spaces:
                 possible_movements.append('N')
         # Look East
-        if (self.playerx + 1) <= self.dimensions:
-            if self.layout[self.playery][self.playerx + 1] not in restricted_spaces:
+        if (self.player_position.x + 1) <= self.dimensions:
+            if self.layout[self.player_position.y][self.player_position.x + 1] not in restricted_spaces:
                 possible_movements.append('E')
         # Look South
-        if (self.playery + 1) <= self.dimensions:
-            if self.layout[self.playery + 1][self.playerx] not in restricted_spaces:
+        if (self.player_position.y + 1) <= self.dimensions:
+            if self.layout[self.player_position.y + 1][self.player_position.x] not in restricted_spaces:
                 possible_movements.append('S')
         # Look West
-        if (self.playerx - 1) >= 0:
-            if self.layout[self.playery][self.playerx - 1] not in restricted_spaces:
+        if (self.player_position.x - 1) >= 0:
+            if self.layout[self.player_position.y][self.player_position.x - 1] not in restricted_spaces:
                 possible_movements.append('W')
 
-        print(f'Possible Movements: {possible_movements}')
+        print(f'Player can move in the following directions: {possible_movements}')
+
         if possible_movements:
             self.determine_optimal_movement(possible_directions=possible_movements)
         else:
-            self.moves_since_checkpoint += 1
-            print('reverting to checkpoint: ', self.checkpoints[-1])
+            # If there are no possible movements, the player must go back to the last spot that a choice was made
             self.revert_to_checkpoint()
 
     # TODO: Possibly optimize this
@@ -96,38 +93,40 @@ class Maze:
             possible_spaces.append(possible_space)
 
         possible_spaces.sort(key=lambda x: x[2])
-        print(f'Possbile movemenets osrted {possible_spaces}')
         optimal_movement = possible_spaces[0]
 
         # If the player has a choice to make, set the current point as a checkpoint
         if len(possible_spaces) > 1:
-            self.moves_since_checkpoint = 0
-            self.checkpoints.append((self.playerx, self.playery))
-        else:
-            self.moves_since_checkpoint += 1
+            checkpoint = self.player_position
+            path_copy = self.path.copy()
+            self.checkpoints.append(checkpoint)
+            self.checkpoint_paths[checkpoint] = path_copy
+
         self.move_player(optimal_movement)
         return
 
-    # TODO: Fix path (has to remove more than one letter sometimes)
     def revert_to_checkpoint(self):
         """
         Reverts the player back to where they had a decision on which way to go
         :return:
         """
-        print('reverting to checkpoint')
         # Set current position to visited
-        self.layout[self.playery][self.playerx] = "V"
+        self.layout[self.player_position.y][self.player_position.x] = "V"
 
         # Get the coordinates of the last "checkpoint" (the last decision)
         last_checkpoint = self.checkpoints.pop()
+        print(f'Reverting to checkpoint at {last_checkpoint}')
+
 
         # Move the player to the last checkpoint
-        self.playerx = last_checkpoint[0]
-        self.playery = last_checkpoint[1]
-        self.layout[self.playery][self.playerx] = "P"
-        for x in range(self.moves_since_checkpoint):
-            self.path.pop()
-        self.display_maze()
+        self.player_position = last_checkpoint
+        self.layout[self.player_position.y][self.player_position.x] = "P"
+
+        # Revert path to last checkpoint's path
+        print(self.checkpoint_paths)
+        self.path = self.checkpoint_paths[last_checkpoint]
+
+        # Recheck the possible movements
         self.check_possible_movements()
         return
 
@@ -155,13 +154,13 @@ class Maze:
         :return:
         """
         if direction == 'N':
-            point = Position(x=self.playerx, y=self.playery - 1)
+            point = Position(x=self.player_position.x, y=self.player_position.y - 1)
         if direction == 'E':
-            point = Position(x=self.playerx + 1, y=self.playery)
+            point = Position(x=self.player_position.x + 1, y=self.player_position.y)
         if direction == 'S':
-            point = Position(x=self.playerx, y=self.playery + 1)
+            point = Position(x=self.player_position.x, y=self.player_position.y + 1)
         if direction == 'W':
-            point = Position(x=self.playerx - 1, y=self.playery)
+            point = Position(x=self.player_position.x - 1, y=self.player_position.y)
 
         return point
 
@@ -170,33 +169,47 @@ class Maze:
 
 
 def main():
+    # GET request
     geturl = 'https://api.noopschallenge.com/mazebot/random?maxSize=10'
-
     data = requests.get(url=geturl).json()
-    print(data)
+
+    # Stores data for the maze
     layout = data['map']
     dimensions = len(layout[0]) - 1
     start = data['startingPosition']
     end = data['endingPosition']
-    post_url = 'https://api.noopschallenge.com' + data['mazePath']
 
+    # Start and End positions of the maze
     start = Position(x=start[0], y=start[1])
     end = Position(x=end[0], y=end[1])
 
+    # Create an instance of the maze
     maze = Maze(layout=layout, start=start, end=end, dimensions=dimensions)
 
+    # Moves the "player" until the end is reached
+    success = False
+    while not success:
+        if maze.player_position == end:
+            success = True
+        else:
+            maze.check_possible_movements()
+
+    # Obtains the path and formats it as a string
+    print()
     path = maze.get_path()
     string_path = ""
     for direction in path:
         string_path += direction
-    print(string_path)
     print(f'Path taken: {path}')
     answer = {
         'directions': string_path
     }
-    print(post_url)
+
+    # POSTS the answer to obtain the result
+    post_url = 'https://api.noopschallenge.com' + data['mazePath']
     result = requests.post(url=post_url, data=json.dumps(answer))
 
+    # Result...
     print(result.content)
 
 
