@@ -1,0 +1,1 @@
+{'result': 'finished', 'message': 'Congratulations chapmanj! You completed the challenge in 579.352 seconds. I am happy to present you with the attached certificate.', 'certificate': '/mazebot/race/certificate/UMmvQ9yLbiPgPy8-4ameLEETARoqlEA-PIXlKiGBNan8PGqZ1PVizccBhktdMQ2g'}
